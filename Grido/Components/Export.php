@@ -46,7 +46,7 @@ class Export extends Component implements \Nette\Application\IResponse
      */
     protected function generateCsv($data, $columns)
     {
-        $head = array();
+        $head = [];
         foreach ($columns as $column) {
             $head[] = $column->getLabel();
         }

@@ -39,7 +39,7 @@ abstract class Filter extends \Grido\Components\Component
     protected $optional;
 
     /** @var array */
-    protected $column = array();
+    protected $column = [];
 
     /** @var string */
     protected $condition = '= ?';
@@ -142,7 +142,7 @@ abstract class Filter extends \Grido\Components\Component
      */
     public function setDefaultValue($value)
     {
-        $this->grid->setDefaultFilter(array($this->getName() => $value));
+        $this->grid->setDefaultFilter([$this->getName() => $value]);
         return $this;
     }
 
@@ -187,7 +187,7 @@ abstract class Filter extends \Grido\Components\Component
     {
         if (!$this->wrapperPrototype) {
             $this->wrapperPrototype = \Nette\Utils\Html::el('th')
-                ->setClass(array('grid-filter-' . $this->getName()));
+                ->setClass(['grid-filter-' . $this->getName()]);
         }
 
         return $this->wrapperPrototype;
@@ -225,7 +225,7 @@ abstract class Filter extends \Grido\Components\Component
             $condition = $condition;
 
         } elseif (is_callable($condition)) {
-            $condition = callback($condition)->invokeArgs(array($value));
+            $condition = callback($condition)->invokeArgs([$value]);
 
         } elseif (is_array($condition)) {
             $condition = isset($condition[$value])

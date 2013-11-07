@@ -50,10 +50,10 @@ class Grid extends Components\Container
     public $perPage;
 
     /** @var array @persistent */
-    public $sort = array();
+    public $sort = [];
 
     /** @var array @persistent */
-    public $filter = array();
+    public $filter = [];
 
     /** @var array event on render */
     public $onRender;
@@ -77,16 +77,16 @@ class Grid extends Components\Container
     protected $filterRenderType;
 
     /** @var array */
-    protected $perPageList = array(10, 20, 30, 50, 100);
+    protected $perPageList = [10, 20, 30, 50, 100];
 
     /** @var int */
     protected $defaultPerPage = 20;
 
     /** @var array */
-    protected $defaultFilter = array();
+    protected $defaultFilter = [];
 
     /** @var array */
-    protected $defaultSort = array();
+    protected $defaultSort = [];
 
     /** @var DataSources\IDataSource */
     protected $model;
@@ -169,7 +169,7 @@ class Grid extends Components\Container
      */
     public function setDefaultSort(array $sort)
     {
-        static $replace = array('asc' => Column::ORDER_ASC, 'desc' => Column::ORDER_DESC);
+        static $replace = ['asc' => Column::ORDER_ASC, 'desc' => Column::ORDER_DESC];
 
         foreach ($sort as $column => $dir) {
             $dir = strtr(strtolower($dir), $replace);
@@ -220,7 +220,7 @@ class Grid extends Components\Container
     public function setFilterRenderType($type)
     {
         $type = strtolower($type);
-        if (!in_array($type, array(Filter::RENDER_INNER, Filter::RENDER_OUTER))) {
+        if (!in_array($type, [Filter::RENDER_INNER, Filter::RENDER_OUTER])) {
             throw new \InvalidArgumentException('Type must be Filter::RENDER_INNER or Filter::RENDER_OUTER.');
         }
 
@@ -550,7 +550,7 @@ class Grid extends Components\Container
     {
         $tr = \Nette\Utils\Html::el('tr');
         if ($this->rowCallback) {
-            $tr = callback($this->rowCallback)->invokeArgs(array($row, $tr));
+            $tr = callback($this->rowCallback)->invokeArgs([$row, $tr]);
         }
 
         return $tr;
@@ -629,11 +629,11 @@ class Grid extends Components\Container
      */
     public function handleReset(\Nette\Forms\Controls\SubmitButton $button)
     {
-        $this->sort = array();
-        $this->filter = array();
+        $this->sort = [];
+        $this->filter = [];
         $this->perPage = NULL;
         $this->getRememberSession()->remove();
-        $button->form->setValues(array(Filter::ID => $this->defaultFilter), TRUE);
+        $button->form->setValues([Filter::ID => $this->defaultFilter], TRUE);
 
         $this->page = 1;
         $this->reload();
@@ -727,9 +727,9 @@ class Grid extends Components\Container
      */
     public function __getConditions(array $filter)
     {
-        $conditions = array();
+        $conditions = [];
         if ($filter) {
-            $this['form']->setDefaults(array(Filter::ID => $filter));
+            $this['form']->setDefaults([Filter::ID => $filter]);
 
             foreach ($filter as $column => $value) {
                 if ($component = $this->getFilter($column, FALSE)) {
@@ -747,7 +747,7 @@ class Grid extends Components\Container
 
     protected function applySorting()
     {
-        $sort = array();
+        $sort = [];
         $this->sort = $this->sort ? $this->sort : $this->defaultSort;
 
         foreach ($this->sort as $column => $dir) {
@@ -762,7 +762,7 @@ class Grid extends Components\Container
                     trigger_error("Column with name '$column' is not sortable.", E_USER_NOTICE);
                     break;
                 }
-            } elseif (!in_array($dir, array(Column::ORDER_ASC, Column::ORDER_DESC))) {
+            } elseif (!in_array($dir, [Column::ORDER_ASC, Column::ORDER_DESC])) {
                 if ($dir == '' && isset($this->defaultSort[$column])) {
                     unset($this->sort[$column]);
                     break;

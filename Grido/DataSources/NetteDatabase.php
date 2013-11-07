@@ -54,9 +54,9 @@ class NetteDatabase extends \Nette\Object implements IDataSource
             : $selection;
 
         if ($condition->callback) {
-            callback($condition->callback)->invokeArgs(array($condition->value, $selection));
+            callback($condition->callback)->invokeArgs([$condition->value, $selection]);
         } else {
-            call_user_func_array(array($selection, 'where'), $condition->__toArray());
+            call_user_func_array([$selection, 'where'], $condition->__toArray());
         }
     }
 
@@ -122,7 +122,7 @@ class NetteDatabase extends \Nette\Object implements IDataSource
             $this->makeWhere($condition, $selection);
         }
 
-        $items = array();
+        $items = [];
         foreach ($selection as $row) {
             $value = is_callable($column)
                 ? (string) $column($row)

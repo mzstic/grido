@@ -48,9 +48,9 @@ class NetteDatabaseTest extends DataSourceTestCase
                     ->setSuggestion($renderer);
 
             $grid->addFilterCheck('male', 'Only male')
-                ->setCondition(array(
-                    TRUE => array('gender', '= ?', 'male')
-                ));
+                ->setCondition([
+                    TRUE => ['gender', '= ?', 'male']
+                ]);
 
             $grid->addFilterCheck('tall', 'Only tall')
                 ->setWhere(function($value, \Nette\Database\Table\Selection $fluent) {

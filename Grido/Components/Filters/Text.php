@@ -53,9 +53,7 @@ class Text extends Filter
         $this->grid->onRender[] = function() use ($prototype, $filter) {
             $replacement = '-query-';
             $prototype->data['grido-suggest-replacement'] = $replacement;
-            $prototype->data['grido-suggest-handler'] = $filter->link('suggest!', array(
-                'query' => $replacement)
-            );
+            $prototype->data['grido-suggest-handler'] = $filter->link('suggest!', ['query' => $replacement]);
         };
 
         return $this;

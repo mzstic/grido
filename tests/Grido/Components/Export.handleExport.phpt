@@ -17,7 +17,7 @@ require_once __DIR__ . '/../Helper.inc.php';
 
 class Response extends \Nette\Object implements \Nette\Http\IResponse
 {
-    public static $headers = array();
+    public static $headers = [];
 
     function setHeader($name, $value)
     {
@@ -39,13 +39,13 @@ class Response extends \Nette\Object implements \Nette\Http\IResponse
 
 test(function() {
     Helper::grid(function(Grid $grid) {
-        $grid->setModel(array(
-            array('id' => 1, 'a' => 'A1', 'b' => 'B1'),
-            array('id' => 2, 'a' => 'A2', 'b' => 'B2'),
-            array('id' => 3, 'a' => 'A3', 'b' => 'B3'),
-            array('id' => 4, 'a' => 'A4', 'b' => 'B4'),
-            array('id' => 5, 'a' => 'A5', 'b' => 'B5'),
-        ));
+        $grid->setModel([
+            ['id' => 1, 'a' => 'A1', 'b' => 'B1'],
+            ['id' => 2, 'a' => 'A2', 'b' => 'B2'],
+            ['id' => 3, 'a' => 'A3', 'b' => 'B3'],
+            ['id' => 4, 'a' => 'A4', 'b' => 'B4'],
+            ['id' => 5, 'a' => 'A5', 'b' => 'B5'],
+        ]);
         $grid->setDefaultPerPage(2);
         $grid->addColumnText('a', 'A');
         $grid->addColumnText('b', 'B');
@@ -53,14 +53,14 @@ test(function() {
     });
 
     ob_start();
-        Helper::request(array('do' => 'grid-export-export'))->send(mock('\Nette\Http\IRequest'), new Response);
+        Helper::request(['do' => 'grid-export-export'])->send(mock('\Nette\Http\IRequest'), new Response);
     $output = ob_get_clean();
     Assert::same(file_get_contents(__DIR__ . '/files/Export.handleExport.expect'), $output);
 
-    Assert::same(array(
+    Assert::same([
 	'Content-Encoding' => 'UTF-16LE',
 	'Content-Length' => 68,
 	'Content-Type' => 'text/csv; charset=UTF-16LE',
 	'Content-Disposition' => 'attachment; filename="Grid.csv"; filename*=utf-8\'\'Grid.csv',
-    ), Response::$headers);
+    ], Response::$headers);
 });

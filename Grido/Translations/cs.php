@@ -9,7 +9,7 @@
  * the file LICENSE.md that was distributed with this source code.
  */
 
-return array(
+return [
     'You can use <, <=, >, >=, <>. e.g. ">= %d"' => 'Můžete použít <, <=, >, >=, <>. Např.: ">= %d"',
     'Select some row' => 'Vyberte řádek',
     'Invert' => 'Obrátit výběr',
@@ -24,4 +24,4 @@ return array(
     'Enter page:' => 'Vložte stranu:',
     'No results.' => 'Žádné výsledky.',
     'Export all items' => 'Exportovat všechny položky',
-);
+];

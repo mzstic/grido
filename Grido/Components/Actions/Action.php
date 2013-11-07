@@ -37,7 +37,7 @@ abstract class Action extends \Grido\Components\Component
     /** @var callback for custom rendering */
     protected $customRender;
 
-    /** @var string - name of primary key f.e.: link->('Article:edit', array($primaryKey => 1)) */
+    /** @var string - name of primary key f.e.: link->('Article:edit', [$primaryKey => 1]) */
     protected $primaryKey;
 
     /** @var callback for disabling */
@@ -154,7 +154,7 @@ abstract class Action extends \Grido\Components\Component
     {
         if ($this->elementPrototype === NULL) {
             $this->elementPrototype = Html::el('a')
-                ->setClass(array('grid-action-' . $this->getName()))
+                ->setClass(['grid-action-' . $this->getName()])
                 ->setText($this->translate($this->label));
         }
 
@@ -190,7 +190,7 @@ abstract class Action extends \Grido\Components\Component
         $element = clone $this->getElementPrototype();
 
         if ($confirm = $this->getOption('confirm')) {
-            $confirm = is_callable($confirm) ? callback($confirm)->invokeArgs(array($row)) : $confirm;
+            $confirm = is_callable($confirm) ? callback($confirm)->invokeArgs([$row]) : $confirm;
             $element->data['grido-confirm'] = $this->translate($confirm);
         }
 
@@ -228,14 +228,14 @@ abstract class Action extends \Grido\Components\Component
      */
     public function render($row)
     {
-        if (!$row || ($this->disable && callback($this->disable)->invokeArgs(array($row)))) {
+        if (!$row || ($this->disable && callback($this->disable)->invokeArgs([$row]))) {
             return;
         }
 
         $element = $this->getElement($row);
 
         if ($this->customRender) {
-            echo callback($this->customRender)->invokeArgs(array($row, $element));
+            echo callback($this->customRender)->invokeArgs([$row, $element]);
             return;
         }
 

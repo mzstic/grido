@@ -48,21 +48,20 @@ class ArraySource extends \Nette\Object implements IDataSource
             ? $this->data
             : $data;
 
-        $that = $this;
-        return array_filter($data, function ($row) use ($condition, $that) {
+        return array_filter($data, function($row) use ($condition) {
             if ($condition->callback) {
-                return callback($condition->callback)->invokeArgs(array($condition->value, $row));
+                return callback($condition->callback)->invokeArgs([$condition->value, $row]);
             }
 
             $i = 0;
-            $results = array();
+            $results = [];
             foreach ($condition->column as $column) {
                 if (Condition::isOperator($column)) {
                     $results[] = " $column ";
 
                 } else {
                     $i = count($condition->condition) > 1 ? $i : 0;
-                    $results[] = (int) $that->compare($row[$column], $condition->condition[$i], $condition->value[$i]);
+                    $results[] = (int) $this->compare($row[$column], $condition->condition[$i], $condition->value[$i]);
 
                     $i++;
                 }
@@ -100,7 +99,7 @@ class ArraySource extends \Nette\Object implements IDataSource
         } elseif ($cond === 'IS NOT NULL') {
             return $actual !== NULL;
 
-        } elseif (in_array($cond, array('<', '<=', '>', '>='))) {
+        } elseif (in_array($cond, ['<', '<=', '>', '>='])) {
             return eval("return {$actual} {$cond} {$expected};");
 
         } else {
@@ -155,7 +154,7 @@ class ArraySource extends \Nette\Object implements IDataSource
         }
 
         foreach ($sorting as $column => $sort) {
-            $data = array();
+            $data = [];
             foreach ($this->data as $item) {
                 $sorter = (string) $item[$column];
                 $data[$sorter][] = $item;
@@ -167,7 +166,7 @@ class ArraySource extends \Nette\Object implements IDataSource
                 krsort($data);
             }
 
-            $this->data = array();
+            $this->data = [];
             foreach($data as $i) {
                 foreach($i as $item) {
                     $this->data[] = $item;
@@ -191,7 +190,7 @@ class ArraySource extends \Nette\Object implements IDataSource
 
         array_slice($data, 1, $limit);
 
-        $items = array();
+        $items = [];
         foreach ($data as $row) {
             $value = is_callable($column)
                 ? (string) $column($row)

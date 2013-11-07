@@ -49,9 +49,9 @@ class DibiFluentTest extends DataSourceTestCase
                     ->setSuggestion();
 
             $grid->addFilterCheck('male', 'Only male')
-                ->setCondition(array(
-                    TRUE => array('gender', '= ?', 'male')
-                ));
+                ->setCondition([
+                    TRUE => ['gender', '= ?', 'male']
+                ]);
 
             $grid->addFilterCheck('tall', 'Only tall')
                 ->setWhere(function($value, \DibiFluent $fluent) {

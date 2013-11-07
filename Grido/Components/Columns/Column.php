@@ -65,7 +65,7 @@ abstract class Column extends \Grido\Components\Component
     protected $sortable = FALSE;
 
     /** @var array of arrays('pattern' => 'replacement') */
-    protected $replacements = array();
+    protected $replacements = [];
 
     /**
      * @param Grido\Grid $grid
@@ -91,7 +91,7 @@ abstract class Column extends \Grido\Components\Component
     }
 
     /**
-     * @param array $replacement array('pattern' => 'replacement')
+     * @param array $replacement ['pattern' => 'replacement']
      * @return Column
      */
     public function setReplacement(array $replacement)
@@ -116,7 +116,7 @@ abstract class Column extends \Grido\Components\Component
      */
     public function setDefaultSort($dir)
     {
-        $this->grid->setDefaultSort(array($this->getName() => $dir));
+        $this->grid->setDefaultSort([$this->getName() => $dir]);
         return $this;
     }
 
@@ -163,12 +163,12 @@ abstract class Column extends \Grido\Components\Component
 
         if ($td === NULL) { //cache
             $td = $this->cellPrototype = \Nette\Utils\Html::el('td')
-                ->setClass(array('grid-cell-' . $this->getName()));
+                ->setClass(['grid-cell-' . $this->getName()]);
         }
 
         if ($this->cellCallback && $row !== NULL) {
             $td = clone $td;
-            $td = callback($this->cellCallback)->invokeArgs(array($row, $td));
+            $td = callback($this->cellCallback)->invokeArgs([$row, $td]);
         }
 
         return $td;
@@ -182,7 +182,7 @@ abstract class Column extends \Grido\Components\Component
     {
         if (!$this->headerPrototype) {
             $this->headerPrototype = \Nette\Utils\Html::el('th')
-                ->setClass(array('column', 'grid-header-' . $this->getName()));
+                ->setClass(['column', 'grid-header-' . $this->getName()]);
         }
 
         if ($this->isSortable() && $this->getSort()) {
@@ -261,7 +261,7 @@ abstract class Column extends \Grido\Components\Component
     public function render($row)
     {
         if (is_callable($this->customRender)) {
-            return callback($this->customRender)->invokeArgs(array($row));
+            return callback($this->customRender)->invokeArgs([$row]);
         }
 
         $value = $this->getValue($row);
@@ -276,7 +276,7 @@ abstract class Column extends \Grido\Components\Component
     public function renderExport($row)
     {
         if (is_callable($this->customRenderExport)) {
-            return callback($this->customRenderExport)->invokeArgs(array($row));
+            return callback($this->customRenderExport)->invokeArgs([$row]);
         }
 
         $value = $this->getValue($row);
@@ -295,7 +295,7 @@ abstract class Column extends \Grido\Components\Component
             return $this->propertyAccessor->getProperty($row, $column);
 
         } elseif (is_callable($column)) {
-            return callback($column)->invokeArgs(array($row));
+            return callback($column)->invokeArgs([$row]);
 
         } else {
             throw new \InvalidArgumentException('Column must be string or callback.');

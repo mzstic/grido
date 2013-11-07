@@ -102,7 +102,7 @@ class Doctrine extends \Nette\Object implements IDataSource
             : $qb;
 
         if ($condition->callback) {
-            return callback($condition->callback)->invokeArgs(array($condition->value, $qb));
+            return callback($condition->callback)->invokeArgs([$condition->value, $qb]);
         }
 
         $columns = $condition->column;
@@ -150,8 +150,7 @@ class Doctrine extends \Nette\Object implements IDataSource
      */
     public function getCount()
     {
-        $paginator = new Paginator($this->getQuery());
-        return $paginator->count();
+        return (new Paginator($this->getQuery()))->count();
     }
 
     /**
@@ -164,7 +163,7 @@ class Doctrine extends \Nette\Object implements IDataSource
     {
         // Paginator is better if the query uses ManyToMany associations
         $usePaginator = $this->qb->getMaxResults() !== NULL || $this->qb->getFirstResult() !== NULL;
-        $data = array();
+        $data = [];
 
         if ($usePaginator) {
             $paginator = new Paginator($this->getQuery());
@@ -241,7 +240,7 @@ class Doctrine extends \Nette\Object implements IDataSource
             $this->makeWhere($condition, $qb);
         }
 
-        $items = array();
+        $items = [];
         $data = $qb->getQuery()->getScalarResult();
         foreach ($data as $row) {
             if (is_callable($column)) {

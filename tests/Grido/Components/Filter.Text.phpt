@@ -20,17 +20,17 @@ class FilterTextTest extends \Tester\TestCase
     function testSetSuggestion()
     {
         Helper::grid(function(Grid $grid) {
-            $grid->setModel(array(
-                array('name' => 'AAtest'),
-                array('name' => 'AAxxx'),
-                array('name' => 'BBtest'),
-                array('name' => 'BBxxx'),
-            ));
+            $grid->setModel([
+                ['name' => 'AAtest'],
+                ['name' => 'AAxxx'],
+                ['name' => 'BBtest'],
+                ['name' => 'BBxxx'],
+            ]);
             $grid->addColumnText('name', 'Name');
             $filter = $grid->addFilterText('name', 'Name')->setSuggestion();
 
             Assert::same('off', $filter->control->controlPrototype->attrs['autocomplete']);
-            Assert::same(array('text', 'suggest'), $filter->control->controlPrototype->class);
+            Assert::same(['text', 'suggest'], $filter->control->controlPrototype->class);
         })->run();
 
         ob_start();
@@ -73,7 +73,7 @@ class FilterTextTest extends \Tester\TestCase
     {
         $grid = new Grid;
         $filter = $grid->addFilterText('text', 'Text');
-        Assert::same(array('text LIKE ?', '%value%'), $filter->__getCondition('value')->__toArray());
+        Assert::same(['text LIKE ?', '%value%'], $filter->__getCondition('value')->__toArray());
     }
 }
 

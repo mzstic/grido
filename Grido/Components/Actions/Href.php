@@ -26,7 +26,7 @@ class Href extends Action
     protected $destination;
 
     /** @var array second param for method $presenter->link() */
-    protected $arguments = array();
+    protected $arguments = [];
 
     /** @var callback for custom href attribute creating */
     protected $customHref;
@@ -70,7 +70,7 @@ class Href extends Action
         $href = '';
 
         if ($this->customHref) {
-            $href = callback($this->customHref)->invokeArgs(array($row));
+            $href = callback($this->customHref)->invokeArgs([$row]);
         } else {
             $primaryKey = $this->getPrimaryKey();
             $primaryValue = $this->propertyAccessor->getProperty($row, $primaryKey);

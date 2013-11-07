@@ -13,9 +13,9 @@
     $form->getElementPrototype()->class[] = 'ajax grido';
 
     $operation = $control->hasOperation();
-    $actions = $control->hasActions() ? $control->getComponent(\Grido\Components\Actions\Action::ID)->getComponents() : array();
+    $actions = $control->hasActions() ? $control->getComponent(\Grido\Components\Actions\Action::ID)->getComponents() : [];
 
-    $filters = $control->hasFilters() ? $form->getComponent(\Grido\Components\Filters\Filter::ID)->getComponents() : array();
+    $filters = $control->hasFilters() ? $form->getComponent(\Grido\Components\Filters\Filter::ID)->getComponents() : [];
     $filterRenderType = $control->getFilterRenderType();
 
     $columns = $control->getComponent(Grido\Components\Columns\Column::ID)->getComponents();
@@ -42,7 +42,7 @@
         {if $icon = $action->getOption('icon')}
         {?
             $element->setText(' ' . $action->getLabel());
-            $element->insert(0, \Nette\Utils\Html::el('i')->setClass(array("glyphicon glyphicon-$icon icon-$icon")));
+            $element->insert(0, \Nette\Utils\Html::el('i')->setClass(["glyphicon glyphicon-$icon icon-$icon"]));
         }
         {/if}
     {/foreach}

@@ -49,9 +49,8 @@ class Operation extends Component
             ->addSelect(self::ID, 'Selected', $operations)
             ->setPrompt('Selected...');
 
-        $that = $this;
-        $grid->onRender[] = function(Grid $grid) use ($that) {
-            $that->addCheckers($grid['form'][Operation::ID]);
+        $grid->onRender[] = function(Grid $grid) {
+            $this->addCheckers($grid['form'][Operation::ID]);
         };
 
         $this->onSubmit[] = $onSubmit;
@@ -118,7 +117,7 @@ class Operation extends Component
             $this->grid->reload();
         }
 
-        $ids = array();
+        $ids = [];
         $operation = $values[self::ID];
         unset($values[self::ID]);
 

@@ -18,14 +18,14 @@ require_once __DIR__ . '/../Helper.inc.php';
 abstract class DataSourceTestCase extends \Tester\TestCase
 {
     /** @var array GET parameters to request */
-    private $params =  array(
+    private $params =  [
         'grid-page' => 2,
-        'grid-sort' => array('country' => Column::ORDER_ASC),
-        'grid-filter' => array(
+        'grid-sort' => ['country' => Column::ORDER_ASC],
+        'grid-filter' => [
             'name' => 'a',
             'male' => TRUE,
             'country' => 'au',
-    ));
+    ]];
 
     function testRender()
     {
@@ -36,33 +36,33 @@ abstract class DataSourceTestCase extends \Tester\TestCase
         $output = ob_get_clean();
 
         //@todo - resolve this wtf? different sorting (dibi and nette db) vs (doctrine and array source)
-        $type = in_array(get_called_class(), array('Grido\Tests\ArraySourceTest', 'Grido\Tests\DoctrineTest')) ? 2 : 1;
+        $type = in_array(get_called_class(), ['Grido\Tests\ArraySourceTest', 'Grido\Tests\DoctrineTest']) ? 2 : 1;
         Assert::matchFile(__DIR__ . "/files/render.$type.expect", $output);
     }
 
     function testSuggest()
     {
         Helper::$presenter->forceAjaxMode = TRUE;
-        $params = $this->params + array('grid-filters-country-query' => 'and', 'do' => 'grid-filters-country-suggest');
+        $params = $this->params + ['grid-filters-country-query' => 'and', 'do' => 'grid-filters-country-suggest'];
         ob_start();
             Helper::request($params);
         $output = ob_get_clean();
         Assert::same('["Finland","Poland"]', $output);
 
-        $params = array('grid-filters-name-query' => 't', 'do' => 'grid-filters-name-suggest');
+        $params = ['grid-filters-name-query' => 't', 'do' => 'grid-filters-name-suggest'];
         ob_start();
             Helper::request($params);
         $output = ob_get_clean();
         Assert::same('["Awet","Caitlin","Dragotina","Katherine","Satu","Trommler"]', $output);
 
         Assert::error(function() {
-            Helper::request(array('grid-filters-phone-query' => 'yyy', 'do' => 'grid-filters-phone-suggest'));
+            Helper::request(['grid-filters-phone-query' => 'yyy', 'do' => 'grid-filters-phone-suggest']);
         }, E_USER_NOTICE, "Suggestion for filter 'phone' is not enabled.");
     }
 
     function testSetWhere()
     {
-        Helper::request(array('grid-filter' => array('tall' => TRUE)));
+        Helper::request(['grid-filter' => ['tall' => TRUE]]);
         Helper::$grid->getData(FALSE);
         Assert::same(10, Helper::$grid->count);
     }
@@ -70,14 +70,14 @@ abstract class DataSourceTestCase extends \Tester\TestCase
     function testExport()
     {
         Helper::$presenter->forceAjaxMode = FALSE;
-        $params = $this->params + array('do' => 'grid-export-export');
+        $params = $this->params + ['do' => 'grid-export-export'];
 
         ob_start();
             Helper::request($params)->send(mock('\Nette\Http\IRequest'), new \Nette\Http\Response);
         $output = ob_get_clean();
 
         //@todo - resolve this wtf? different sorting (dibi, nette db, doctrine) vs (array source)
-        $type = in_array(get_called_class(), array('Grido\Tests\ArraySourceTest')) ? '.array' : '';
+        $type = in_array(get_called_class(), ['Grido\Tests\ArraySourceTest']) ? '.array' : '';
         Assert::same(file_get_contents(__DIR__ . "/files/export$type.expect"), $output);
     }
 }

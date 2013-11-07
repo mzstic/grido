@@ -21,13 +21,13 @@ namespace Grido\Translations;
 class FileTranslator extends \Nette\Object implements \Nette\Localization\ITranslator
 {
     /** @var array */
-    protected $translations = array();
+    protected $translations = [];
 
     /**
      * @param string $lang
      * @param array $translations
      */
-    public function __construct($lang = NULL, array $translations = array())
+    public function __construct($lang = NULL, array $translations = [])
     {
         if ($lang) {
             $translations = $translations + $this->getTranslationsFromFile($lang);

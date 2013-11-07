@@ -44,9 +44,9 @@ class ArraySourceTest extends DataSourceTestCase
                     ->setSuggestion();
 
             $grid->addFilterCheck('male', 'Only male')
-                ->setCondition(array(
-                    TRUE => array('gender', '= ?', 'male')
-                ));
+                ->setCondition([
+                    TRUE => ['gender', '= ?', 'male']
+                ]);
 
             $grid->addFilterCheck('tall', 'Only tall')
                 ->setWhere(function($value, array $row) {
@@ -61,7 +61,7 @@ class ArraySourceTest extends DataSourceTestCase
 
     function testCompare()
     {
-        $source = new \Grido\DataSources\ArraySource(array());
+        $source = new \Grido\DataSources\ArraySource([]);
 
         Assert::true($source->compare('Lucie', 'LIKE ?', '%Lu%'));
         Assert::true($source->compare('Lucie', 'LIKE ?', '%ie'));
