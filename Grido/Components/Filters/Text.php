@@ -17,6 +17,9 @@ namespace Grido\Components\Filters;
  * @package     Grido
  * @subpackage  Components\Filters
  * @author      Petr Bugyík
+ *
+ * @property int $suggestionLimit
+ * @property-write callback $suggestionCallback
  */
 class Text extends Filter
 {
@@ -33,7 +36,7 @@ class Text extends Filter
     protected $suggestionColumn;
 
     /** @var int */
-    protected $suggestionLimit = 50;
+    protected $suggestionLimit = 10;
 
     /** @var callback */
     protected $suggestionCallback;
@@ -56,6 +59,7 @@ class Text extends Filter
         $this->grid->onRender[] = function() use ($prototype, $filter) {
             $replacement = '-query-';
             $prototype->data['grido-suggest-replacement'] = $replacement;
+            $prototype->data['grido-suggest-limit'] = $filter->suggestionLimit;
             $prototype->data['grido-suggest-handler'] = $filter->link('suggest!', ['query' => $replacement]);
         };
 
@@ -87,6 +91,14 @@ class Text extends Filter
     /**********************************************************************************************/
 
     /**
+     * @return int
+     */
+    public function getSuggestionLimit()
+    {
+        return $this->suggestionLimit;
+    }
+
+    /**
      * @param string $query - value from input
      * @internal
      */
@@ -96,12 +108,6 @@ class Text extends Filter
 
         if (!$this->getPresenter()->isAjax() || !$this->suggestion || $query == '') {
             $this->getPresenter()->terminate();
-        }
-
-        if (!$this->suggestion) {
-            trigger_error("Suggestion for filter '$name' is not enabled.", E_USER_NOTICE);
-            $this->getPresenter()->terminate();
-            return; //for tests
         }
 
         $actualFilter = $this->grid->getActualFilter();
@@ -118,14 +124,30 @@ class Text extends Filter
             $items = $this->grid->model->suggest($column, $conditions, $this->suggestionLimit);
 
         } else {
-            $items = callback($this->suggestionCallback)->invokeArgs(array($query, $actualFilter, $conditions));
+            $items = callback($this->suggestionCallback)->invokeArgs([$query, $actualFilter, $conditions]);
             if (!is_array($items)) {
                 throw new \Exception('Items must be an array.');
             }
         }
 
-        print \Nette\Utils\Json::encode($items);
-        $this->getPresenter()->terminate();
+        //sort items - first begining of item is same as query, then case sensitive and case insensitive
+        $startsWith = $caseSensitive = $caseInsenstive = [];
+        foreach($items as $item){
+            if (stripos($item, $query) === 0) {
+                $startsWith[] = $item;
+            } elseif (strpos($item, $query) !== FALSE) {
+                $caseSensitive[] = $item;
+            } else {
+                $caseInsenstive[] = $item;
+            }
+        }
+
+        sort($startsWith);
+        sort($caseSensitive);
+        sort($caseInsenstive);
+
+        $items = array_merge($startsWith, $caseSensitive, $caseInsenstive);
+        $this->getPresenter()->sendResponse(new \Nette\Application\Responses\JsonResponse($items));
     }
 
     /**

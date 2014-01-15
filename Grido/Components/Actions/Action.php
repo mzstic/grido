@@ -56,7 +56,7 @@ abstract class Action extends \Grido\Components\Component
         $this->addComponentToGrid($grid, $name);
 
         $this->type = get_class($this);
-        $this->label = $label;
+        $this->label = $this->translate($label);
     }
 
     /**
@@ -155,7 +155,8 @@ abstract class Action extends \Grido\Components\Component
         if ($this->elementPrototype === NULL) {
             $this->elementPrototype = Html::el('a')
                 ->setClass(['grid-action-' . $this->getName()])
-                ->setText($this->translate($this->label));
+                ->setText($this->label);
+
         }
 
         if (isset($this->elementPrototype->class) && is_string($this->elementPrototype->class)) {
@@ -190,8 +191,13 @@ abstract class Action extends \Grido\Components\Component
         $element = clone $this->getElementPrototype();
 
         if ($confirm = $this->getOption('confirm')) {
-            $confirm = is_callable($confirm) ? callback($confirm)->invokeArgs([$row]) : $confirm;
-            $element->data['grido-confirm'] = $this->translate($confirm);
+            $confirm = is_callable($confirm)
+                ? callback($confirm)->invokeArgs([$row])
+                : $confirm;
+
+            $element->data['grido-confirm'] = is_array($confirm)
+                ? vsprintf($this->translate(array_shift($confirm)), $confirm)
+                : $this->translate($confirm);
         }
 
         return $element;

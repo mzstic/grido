@@ -61,7 +61,13 @@ class ArraySource extends \Nette\Object implements IDataSource
 
                 } else {
                     $i = count($condition->condition) > 1 ? $i : 0;
-                    $results[] = (int) $this->compare($row[$column], $condition->condition[$i], $condition->value[$i]);
+                    $results[] = (int) $this->compare(
+                        $row[$column],
+                        $condition->condition[$i],
+                        isset($condition->value[$i])
+                            ? $condition->value[$i]
+                            : NULL
+                    );
 
                     $i++;
                 }
@@ -92,6 +98,9 @@ class ArraySource extends \Nette\Object implements IDataSource
 
         } else if ($cond === '=') {
             return $actual == $expected;
+
+        } else if ($cond === '<>') {
+            return $actual != $expected;
 
         } elseif ($cond === 'IS NULL') {
             return $actual === NULL;
@@ -203,9 +212,6 @@ class ArraySource extends \Nette\Object implements IDataSource
             $items[$value] = $value;
         }
 
-        $items = array_values($items);
-        sort($items);
-
-        return $items;;
+        return array_values($items);
     }
 }

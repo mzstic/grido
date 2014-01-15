@@ -259,9 +259,6 @@ class Doctrine extends \Nette\Object implements IDataSource
             }
         }
 
-        $items = array_values($items);
-        sort($items);
-
-        return $items;
+        return array_values($items);
     }
 }

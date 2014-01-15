@@ -19,8 +19,13 @@
         }
     },
     "require": {
+<<<<<<< HEAD
         "php": ">=5.4",
         "nette/nette" : "@dev"
+=======
+        "php": ">=5.3",
+        "nette/nette" : "~2.0"
+>>>>>>> master
     },
     "require-dev": {
         "nette/tester": "@dev",
