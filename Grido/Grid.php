@@ -611,9 +611,15 @@ class Grid extends Components\Container
     public function handleFilter(\Nette\Forms\Controls\SubmitButton $button)
     {
         $values = $button->form->values[Filter::ID];
+        $sessionFilter = $this->rememberState
+            ? isset($this->getRememberSession()->params['filter'])
+                ? $this->getRememberSession()->params['filter']
+                : array()
+            : array();
+
         foreach ($values as $name => $value) {
-            $value = (string) $value;
-            if ($value != '' || isset($this->defaultFilter[$name])) {
+            $value = (string) $value; //maybe this could be removed
+            if ($value != '' || isset($this->defaultFilter[$name]) || isset($sessionFilter[$name])) {
                 $this->filter[$name] = $this->getFilter($name)->changeValue($value);
             } elseif (isset($this->filter[$name])) {
                 unset($this->filter[$name]);
@@ -698,12 +704,15 @@ class Grid extends Components\Container
         $this->saveRememberState();
         $data = $this->getData();
 
-        $this->template->paginator = $this->paginator;
-        $this->template->data = $data;
-
         if ($this->onRender) {
             $this->onRender($this);
         }
+
+        $this->template->data = $data;
+        $this->template->form = $form = $this['form'];
+        $this->template->paginator = $this->paginator;
+
+        $form['count']->setValue($this->getPerPage());
 
         $this->template->render();
     }
@@ -799,7 +808,6 @@ class Grid extends Components\Container
             $perPage = $this->defaultPerPage;
         }
 
-        $this['form']['count']->setValue($perPage);
         $this->model->limit($paginator->getOffset(), $paginator->getLength());
     }
 
