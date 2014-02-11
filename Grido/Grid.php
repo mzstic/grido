@@ -614,8 +614,8 @@ class Grid extends Components\Container
         $sessionFilter = $this->rememberState
             ? isset($this->getRememberSession()->params['filter'])
                 ? $this->getRememberSession()->params['filter']
-                : array()
-            : array();
+                : []
+            : [];
 
         foreach ($values as $name => $value) {
             $value = (string) $value; //maybe this could be removed

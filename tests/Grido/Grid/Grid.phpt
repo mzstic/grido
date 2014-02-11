@@ -529,23 +529,23 @@ class GridTest extends \Tester\TestCase
 
         //test session filter
         Helper::grid(function(Grid $grid) {
-            $grid->setModel(array(array('A' => 'test')));
+            $grid->setModel([['A' => 'test']]);
             $grid->setRememberState();
             $grid->addColumnText('A', 'A');
             $grid->addFilterText('A', 'A');
         });
 
-        $params = array(
+        $params = [
             'do' => 'grid-form-submit',
-            Grid::BUTTONS => array('search' => 'Search'),
-        );
-        $filter = array('A' => 'test');
-        Helper::request($params + array(Filter::ID => $filter));
+            Grid::BUTTONS => ['search' => 'Search'],
+        ];
+        $filter = ['A' => 'test'];
+        Helper::request($params + [Filter::ID => $filter]);
         Helper::$grid->render(); //save2session
         Assert::same($filter, Helper::$grid->getRememberSession()->params['filter']);
 
-        $filter = array('A' => '');
-        Helper::request($params + array(Filter::ID => $filter));
+        $filter = ['A' => ''];
+        Helper::request($params + [Filter::ID => $filter]);
         Helper::$grid->render(); //save2session
         Assert::same($filter, Helper::$grid->getRememberSession()->params['filter']);
     }
